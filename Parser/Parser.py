@@ -5,8 +5,18 @@ import sys
 class Parser:
     def __init__(self) -> None:
         self.gameBoard = []
-    def __start(self, size) -> None:
-        pass
+    def __start(self, value) -> None:
+        size = int(value)
+        if (size < 5):
+            print('ERROR unvalid_size', flush=True, end='\n')
+            return
+        for i in range(0, size):
+            line = [0] * size
+            self.gameBoard.append(line)
+        print('OK', flush=True, end='\n')
+    
+    def __debug(self) -> None:
+        print(self.gameBoard)
     def __turn(self, position) -> None:
         pass
     def __begin(self) -> None:
@@ -26,6 +36,8 @@ class Parser:
             self.__end()
         elif (cmd == "ABOUT"):
             self.__about()
+        elif (cmd == "DEBUG"):
+            self.__debug()
         
 
     def run(self) -> None:
