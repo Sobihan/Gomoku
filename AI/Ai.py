@@ -48,6 +48,37 @@ class AI:
             return True
         return False
 
+    def unDiagonal(self, board, lenght):
+        un_b = []
+        y = 0
+        l = []
+        while (y < lenght):
+            l.append(board[y][y])
+            y += 1
+        y = 1
+        un_b.append(l)
+        rem = 1
+        while(y < lenght):
+            l = []
+            tmp = 0
+            while (y < lenght):
+                l.append(board[y][y - rem])
+                y += 1
+                tmp += 1
+            while (len(l) < lenght):
+                l.append(board[y][tmp - 1])
+                y += 1
+            un_b.append(l)
+            rem += 1
+            y = rem
+        un_b = self.vertical(un_b)
+        return un_b
+    def unreverseDiagnoal(self, board, lenght):
+        board.reverse()
+        board = self.unDiagonal(board, lenght)
+        for i in board:
+            i.reverse()
+        return board
     def copy(self, board):
         newBoard = []
         for line in board:
@@ -196,7 +227,7 @@ class AI:
                 return board
         return board
     
-    def importantMove(self, who, newBoard, diagonal, reverseDiagonal, verticalBoard):
+    def importantMove(self, who, newBoard, diagonalBoard, reverseDiagonalBoard, verticalBoard):
         result = self.getCritcalMove(newBoard, who)
         if result != -1:
             returnValue = self.getPatern(newBoard, result, who)
@@ -206,6 +237,17 @@ class AI:
             returnValue = self.getPatern(verticalBoard, result, who)
             returnValue = self.unvertical(verticalBoard)
             return self.findBestMove(returnValue)
+        result = self.getCritcalMove(diagonalBoard, who)
+        if result != -1:
+            returnValue = self.getPatern(diagonalBoard)
+            returnValue = self.unDiagonal(diagonalBoard, len(newBoard))
+            return self.findBestMove(returnValue)
+        result = self.getCritcalMove(reverseDiagonalBoard, who)
+        if result != -1:
+            returnValue = self.getPatern(reverseDiagonalBoard)
+            returnValue = self.unreverseDiagnoal(reverseDiagonalBoard, len(newBoard))
+            return self.findBestMove(returnValue)
+        return -1 -1
 
 
 
