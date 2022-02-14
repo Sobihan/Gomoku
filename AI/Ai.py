@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 from math import ceil
 from nis import match
+from operator import ne
 
 GAME_MANAGER = 2
 GAME_PLAYER = 1
@@ -249,7 +250,67 @@ class AI:
             return self.findBestMove(returnValue)
         return -1, -1
 
+    def evaluationFromZero(self, line):
+        if line[0] == 0:
+            if line[1] == GAME_PLAYER:
+                return 20
+            elif line[1] == GAME_MANAGER:
+                return 10
+    def evaluationFromLast(self, line, val):
+        if line[val] == 0:
+            if line[val - 1] == GAME_PLAYER:
+                return 20
+            elif line[val -1] == GAME_MANAGER:
+                return 10
+    def evaluationFromOther(self, line, val):
+        result = 0
+        if line[val] == 0:
+            if line[val - 1] == GAME_PLAYER:
+                result += 20
+            elif line[val - 1] == GAME_MANAGER:
+                result += 10
+            if line[val + 1] == GAME_PLAYER:
+                result += 20
+            elif line[val + 1] == GAME_MANAGER:
+                result += 10
+        return result
 
+    def evaluationDirection(self, board):
+        for i in board:
+            val = 0
+            if len(i) > 1:
+                while val < len(i):
+                    if val == 0:
+                        i[val] += self.evaluationFromZero(i)
+                    elif val == len(i) - 1:
+                        i[val] += self.evaluationFromLast(i, val)
+                    else:
+                        i[val] += self.evaluationFromOther(i, val)
+                    val += 1
+
+    def mergeList(self, src, cpy):
+        return [x + y for x, y in zip(src, cpy)]
+
+    def merge(self, newBoard, verticalBoard, diagonalBoard, reverseDiagonalBoard):
+        result = []
+        for i in range(len(newBoard)):
+            line = []
+            line = self.mergeList(newBoard[i], verticalBoard[i])
+            line = self.mergeList(newBoard[i], diagonalBoard[i])
+            line = self.mergeList(newBoard[i], reverseDiagonalBoard[i])
+            result.append(line)
+        return result
+
+    def evaluation(self, newBoard, verticalBoard, diagonalBoard, reverseDiagonalBoard):
+        newBoard = self.evaluationDirection(newBoard)
+        verticalBoard = self.evaluationDirection(verticalBoard)
+        verticalBoard = self.unvertical(verticalBoard)
+        diagonalBoard = self.evaluationDirection(diagonalBoard)
+        diagonalBoard = self.unDiagonal(diagonalBoard)
+        reverseDiagonalBoard = self.evaluationDirection(reverseDiagonalBoard)
+        reverseDiagonalBoard = self.unreverseDiagnoal(reverseDiagonalBoard)
+        resultBoard = self.merge(newBoard, verticalBoard, diagonalBoard, reverseDiagonalBoard)
+        return self.findBestMove(resultBoard)
 
     def play(self, board):
         if self.boardIsEmpty(board):
@@ -263,4 +324,4 @@ class AI:
         x, y = self.importantMove(GAME_MANAGER, newBoard, diagonalBoard, reverseDiagonal, verticalBoard)
         if x != -1 and y != -1:
             return x, y
-        return [0]
+        return self.evaluation(newBoard, verticalBoard, diagonalBoard, reverseDiagonal)
