@@ -2,7 +2,7 @@ RM	=	rm -f
 
 NAME	=	 pbrain-gomoku-ai
 
-SRC	=	Ai.py
+SRC	=	main.py
 
 $(NAME)	:
 			cp $(SRC)  pbrain-gomoku-ai
