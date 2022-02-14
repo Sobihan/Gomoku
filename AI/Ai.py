@@ -247,7 +247,7 @@ class AI:
             returnValue = self.getPatern(reverseDiagonalBoard)
             returnValue = self.unreverseDiagnoal(reverseDiagonalBoard, len(newBoard))
             return self.findBestMove(returnValue)
-        return -1 -1
+        return -1, -1
 
 
 
@@ -257,4 +257,10 @@ class AI:
             return [middle, middle]
         newBoard, verticalBoard, diagonalBoard, reverseDiagonal = self.getAllCopy(board)
         self.createPatterns()
+        x, y = self.importantMove(GAME_PLAYER, newBoard, diagonalBoard, reverseDiagonal, verticalBoard)
+        if x != -1 and y != -1:
+            return x, y
+        x, y = self.importantMove(GAME_MANAGER, newBoard, diagonalBoard, reverseDiagonal, verticalBoard)
+        if x != -1 and y != -1:
+            return x, y
         return [0]
