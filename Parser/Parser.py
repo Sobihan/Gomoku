@@ -20,7 +20,8 @@ class Parser:
         print('OK', flush=True, end='\n')
 
     def __debug(self) -> None:
-        print(self.gameBoard)
+        for i in self.gameBoard:
+            print(i)
 
     def __turn(self, position, ai) -> None:
         x, y = list(map(int, position.split(','))) # "3, 2" -> 3, 2
@@ -33,7 +34,6 @@ class Parser:
         x, y = ai.play(self.gameBoard)
         self.gameBoard[y][x] =  GAME_PLAYER
         self.__print(x, y)
-        pass
     def __board(self, ai) -> None:
         for line in sys.stdin:
             if (line.rstrip() != "DONE"):
