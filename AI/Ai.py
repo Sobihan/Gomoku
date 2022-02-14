@@ -7,6 +7,8 @@ GAME_MANAGER = 2
 GAME_PLAYER = 1
 
 class AI:
+    def __init__(self) -> None:
+         self.createPatterns()
     def createPatterns(self):
         self.winnerPatterns = [
         [0, 1, 1, 1, 1],
@@ -317,7 +319,6 @@ class AI:
             middle = ceil(len(board)/2)
             return [middle, middle]
         newBoard, verticalBoard, diagonalBoard, reverseDiagonal = self.getAllCopy(board)
-        self.createPatterns()
         x, y = self.importantMove(GAME_PLAYER, newBoard, diagonalBoard, reverseDiagonal, verticalBoard)
         if x != -1 and y != -1:
             return x, y
